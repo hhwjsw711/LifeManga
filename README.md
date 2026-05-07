@@ -39,9 +39,31 @@
 
 ---
 
-## 快速运行
+## 截图
 
-### 1. clone & 打开
+> 在这放几张运行截图，README 比代码更值钱（先占位，跑起来之后再填）。
+
+<!--
+| 工程列表 | 创作页 | 故事模式 |
+|---|---|---|
+| ![projects](docs/screenshots/projects.png) | ![home](docs/screenshots/home.png) | ![story](docs/screenshots/story.png) |
+
+| 角色库 | 任务面板 | 日志详情 |
+|---|---|---|
+| ![characters](docs/screenshots/characters.png) | ![tasks](docs/screenshots/tasks.png) | ![logs](docs/screenshots/logs.png) |
+-->
+
+---
+
+## 跑起来的 7 步清单
+
+> 全程大概 15 分钟，前提是已经有 Apple ID + OpenAI 账号。
+
+### ① 装 Xcode 15+
+
+App Store 装最新 Xcode（macOS 也得够新，Xcode 15 要 macOS 13.5 起步）。
+
+### ② Clone 项目
 
 ```bash
 git clone https://github.com/iam567/LifeManga.git
@@ -49,25 +71,55 @@ cd LifeManga/LifeManga
 open LifeManga.xcodeproj
 ```
 
-### 2. 配置签名
+### ③ 改 Bundle ID + 选 Team
 
-Xcode → Target `LifeManga` → **Signing & Capabilities**
+Xcode 顶部选中 `LifeManga` target → **Signing & Capabilities**：
 
-- **Team** 选你的 Apple ID（个人开发者免费 Team 也行）
-- **Bundle Identifier** 改成你自己的，比如 `com.yourname.lifemanga`
+- **Team**：从下拉选自己的 Apple ID（没有就点 "Add an Account..." 登录，**免费 Apple ID 也能签**）
+- **Bundle Identifier**：改成 `com.<你的名字>.lifemanga` 这种唯一字符串。**这步必须改**——`com.iam567.lifemanga` 我已经占了，撞 ID 苹果不让签
 
-### 3. 跑起来
+### ④ 真机运行
 
-- iPhone 真机推荐（模拟器没相机，但选相册可以）
-- ⌘R 运行
+- iPhone 用数据线连 Mac → 解锁 → 弹"信任这台电脑"点信任
+- Xcode 顶部设备选择器选你的 iPhone
+- ⌘R 编译并安装到手机
 
-### 4. 配置 OpenAI API Key
+> 模拟器也能跑，但拍照功能没法用（模拟器没摄像头）。从相册选图、做漫画都正常。
 
-首次进入顶部会有黄色提示 → 设置 Tab → 粘贴 `sk-...` Key → 保存。
+### ⑤ iPhone 上信任开发者证书
 
-> Key 仅保存在本机 iOS Keychain，源码不含任何 Key。
+第一次跑会弹"未受信任的企业级开发者"导致 App 闪退。去：
+
+设置 → 通用 → VPN与设备管理 → 找到你的 Apple ID → 点信任 → 回到桌面再点 App 就能进了
+
+### ⑥ App 内填 OpenAI API Key
+
+进入 App 后顶部会有黄色提示 → 设置 Tab → 粘贴 `sk-...` Key → 保存。
+
+> Key 只存在本机 iOS Keychain，源码不含任何 Key。
 > [platform.openai.com/api-keys](https://platform.openai.com/api-keys) 申请。
-> ⚠️ 调用 `gpt-image-2` 需要先在 OpenAI 控制台完成 **Organization 验证**，否则 403。
+
+### ⑦ 完成 OpenAI Organization 验证
+
+`gpt-image-2` 不是开箱即用的——OpenAI 强制要求做 organization 验证，没验证调用直接报 403。
+
+[platform.openai.com](https://platform.openai.com) → Settings → Organization → **Verify Organization**（一般要交身份证 / 护照照片，1~2 个工作日审核）。
+
+完成后回 App 试着生成一张漫画，能出图就成功了。🎉
+
+---
+
+## 容易踩的坑
+
+| 坑 | 现象 | 解决 |
+|---|---|---|
+| **免费 Apple ID 签的 App 7 天后过期** | 一周后打开 App 闪退 | 重新连 Mac ⌘R 一次重签；或者付 $99/年开发者账号 |
+| **免费 Apple ID 设备装机限制** | 装到第 11 个 App 时报错 | 一个免费 ID 一年只能装 10 个不同 App，删几个旧的 |
+| **iOS 版本太老** | Xcode 跑到设备上提示 "iOS 17.0 or later required" | iPhone 升级到 iOS 17+，或者把 `IPHONEOS_DEPLOYMENT_TARGET` 调低（部分 SwiftUI 17 API 会失效） |
+| **OpenAI 余额 $0** | 任何调用都 401 / `insufficient_quota` | 去 platform.openai.com → Billing 充 $5 起步 |
+| **没做 organization 验证** | 调 `gpt-image-2` 报 403 `must verify organization` | 见上面第 ⑦ 步 |
+| **国内网络** | 请求超时 / 挂 90 秒报错 | OpenAI API 在国内直连不通，需自行解决网络环境 |
+| **同一台 iPhone 有多人的 LifeManga** | 数据混在一起 | 现在每个 Bundle ID 的 App 是独立沙盒，只要 ③ 步换了 Bundle ID 就互不干扰 |
 
 ---
 
