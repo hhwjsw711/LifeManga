@@ -44,7 +44,7 @@
 ### 1. clone & 打开
 
 ```bash
-git clone https://github.com/<your-username>/LifeManga.git
+git clone https://github.com/iam567/LifeManga.git
 cd LifeManga/LifeManga
 open LifeManga.xcodeproj
 ```
