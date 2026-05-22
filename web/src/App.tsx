@@ -1,218 +1,172 @@
-"use client";
-
-import {
-  Authenticated,
-  Unauthenticated,
-  useConvexAuth,
-  useMutation,
-  useQuery,
-} from "convex/react";
-import { api } from "../convex/_generated/api";
+import { Authenticated, Unauthenticated, useQuery } from "convex/react";
 import { useAuthActions } from "@convex-dev/auth/react";
-import { useState } from "react";
+import { api } from "../convex/_generated/api";
+import { useHashRoute, navigate, Route } from "./lib/router";
+import { SignInForm } from "./components/SignInForm";
+import { ProjectListPage } from "./pages/ProjectListPage";
+import { ProjectShellPage } from "./pages/ProjectShellPage";
+import { CharacterLibraryPage } from "./pages/CharacterLibraryPage";
+import { PublishPage } from "./pages/PublishPage";
+import { TaskManagerPage } from "./pages/TaskManagerPage";
+import { SettingsPage } from "./pages/SettingsPage";
 
 export default function App() {
+  const route = useHashRoute();
+
   return (
-    <>
-      <header className="sticky top-0 z-10 bg-light dark:bg-dark p-4 border-b-2 border-slate-200 dark:border-slate-800">
-        Convex + React + Convex Auth
-        <SignOutButton />
-      </header>
-      <main className="p-8 flex flex-col gap-16">
-        <h1 className="text-4xl font-bold text-center">
-          Convex + React + Convex Auth
-        </h1>
-        <Authenticated>
-          <Content />
-        </Authenticated>
-        <Unauthenticated>
+    <div className="min-h-screen bg-light dark:bg-dark">
+      <Unauthenticated>
+        <div className="min-h-screen flex items-center justify-center">
           <SignInForm />
-        </Unauthenticated>
-      </main>
-    </>
-  );
-}
-
-function SignOutButton() {
-  const { isAuthenticated } = useConvexAuth();
-  const { signOut } = useAuthActions();
-  return (
-    <>
-      {isAuthenticated && (
-        <button
-          className="bg-slate-200 dark:bg-slate-800 text-dark dark:text-light rounded-md px-2 py-1"
-          onClick={() => void signOut()}
-        >
-          Sign out
-        </button>
-      )}
-    </>
-  );
-}
-
-function SignInForm() {
-  const { signIn } = useAuthActions();
-  const [flow, setFlow] = useState<"signIn" | "signUp">("signIn");
-  const [error, setError] = useState<string | null>(null);
-  return (
-    <div className="flex flex-col gap-8 w-96 mx-auto">
-      <p>Log in to see the numbers</p>
-      <form
-        className="flex flex-col gap-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          const formData = new FormData(e.target);
-          formData.set("flow", flow);
-          void signIn("password", formData).catch((error) => {
-            setError(error.message);
-          });
-        }}
-      >
-        <input
-          className="bg-light dark:bg-dark text-dark dark:text-light rounded-md p-2 border-2 border-slate-200 dark:border-slate-800"
-          type="email"
-          name="email"
-          placeholder="Email"
-        />
-        <input
-          className="bg-light dark:bg-dark text-dark dark:text-light rounded-md p-2 border-2 border-slate-200 dark:border-slate-800"
-          type="password"
-          name="password"
-          placeholder="Password"
-        />
-        <button
-          className="bg-dark dark:bg-light text-light dark:text-dark rounded-md"
-          type="submit"
-        >
-          {flow === "signIn" ? "Sign in" : "Sign up"}
-        </button>
-        <div className="flex flex-row gap-2">
-          <span>
-            {flow === "signIn"
-              ? "Don't have an account?"
-              : "Already have an account?"}
-          </span>
-          <span
-            className="text-dark dark:text-light underline hover:no-underline cursor-pointer"
-            onClick={() => setFlow(flow === "signIn" ? "signUp" : "signIn")}
-          >
-            {flow === "signIn" ? "Sign up instead" : "Sign in instead"}
-          </span>
         </div>
-        {error && (
-          <div className="bg-red-500/20 border-2 border-red-500/50 rounded-md p-2">
-            <p className="text-dark dark:text-light font-mono text-xs">
-              Error signing in: {error}
-            </p>
-          </div>
-        )}
-      </form>
+      </Unauthenticated>
+      <Authenticated>
+        <AppShell route={route}>
+          <RouteRenderer route={route} />
+        </AppShell>
+      </Authenticated>
     </div>
   );
 }
 
-function Content() {
-  const { viewer, numbers } =
-    useQuery(api.myFunctions.listNumbers, {
-      count: 10,
-    }) ?? {};
-  const addNumber = useMutation(api.myFunctions.addNumber);
-
-  if (viewer === undefined || numbers === undefined) {
-    return (
-      <div className="mx-auto">
-        <p>loading... (consider a loading skeleton)</p>
-      </div>
-    );
+function RouteRenderer({ route }: { route: Route }) {
+  switch (route.page) {
+    case "projects":
+      return <ProjectListPage />;
+    case "project":
+      return <ProjectShellPage projectId={route.projectId} />;
+    case "characters":
+      return <CharacterLibraryPage />;
+    case "publish":
+      return <PublishPage />;
+    case "tasks":
+      return <TaskManagerPage />;
+    case "settings":
+      return <SettingsPage />;
+    default:
+      return <ProjectListPage />;
   }
+}
+
+function AppShell({
+  children,
+  route,
+}: {
+  children: React.ReactNode;
+  route: Route;
+}) {
+  const { signOut } = useAuthActions();
+  const runningJobs = useQuery(api.jobs.listRunning);
+  const runningCount = runningJobs?.length ?? 0;
 
   return (
-    <div className="flex flex-col gap-8 max-w-lg mx-auto">
-      <p>Welcome {viewer ?? "Anonymous"}!</p>
-      <p>
-        Click the button below and open this page in another window - this data
-        is persisted in the Convex cloud database!
-      </p>
-      <p>
-        <button
-          className="bg-dark dark:bg-light text-light dark:text-dark text-sm px-4 py-2 rounded-md border-2"
-          onClick={() => {
-            void addNumber({ value: Math.floor(Math.random() * 10) });
-          }}
-        >
-          Add a random number
-        </button>
-      </p>
-      <p>
-        Numbers:{" "}
-        {numbers?.length === 0
-          ? "Click the button!"
-          : (numbers?.join(", ") ?? "...")}
-      </p>
-      <p>
-        Edit{" "}
-        <code className="text-sm font-bold font-mono bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded-md">
-          convex/myFunctions.ts
-        </code>{" "}
-        to change your backend
-      </p>
-      <p>
-        Edit{" "}
-        <code className="text-sm font-bold font-mono bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded-md">
-          src/App.tsx
-        </code>{" "}
-        to change your frontend
-      </p>
-      <div className="flex flex-col">
-        <p className="text-lg font-bold">Useful resources:</p>
-        <div className="flex gap-2">
-          <div className="flex flex-col gap-2 w-1/2">
-            <ResourceCard
-              title="Convex docs"
-              description="Read comprehensive documentation for all Convex features."
-              href="https://docs.convex.dev/home"
-            />
-            <ResourceCard
-              title="Stack articles"
-              description="Learn about best practices, use cases, and more from a growing
-            collection of articles, videos, and walkthroughs."
-              href="https://www.typescriptlang.org/docs/handbook/2/basic-types.html"
-            />
-          </div>
-          <div className="flex flex-col gap-2 w-1/2">
-            <ResourceCard
-              title="Templates"
-              description="Browse our collection of templates to get started quickly."
-              href="https://www.convex.dev/templates"
-            />
-            <ResourceCard
-              title="Discord"
-              description="Join our developer community to ask questions, trade tips & tricks,
-            and show off your projects."
-              href="https://www.convex.dev/community"
-            />
-          </div>
+    <div className="flex flex-col min-h-screen">
+      <header className="sticky top-0 z-10 bg-light dark:bg-dark border-b border-slate-200 dark:border-slate-800">
+        <div className="max-w-2xl mx-auto flex items-center justify-between px-4 py-3">
+          <h1 className="text-lg font-bold">LifeManga</h1>
+          <button
+            onClick={() => void signOut()}
+            className="text-sm text-slate-400 hover:text-slate-600 transition-colors"
+            aria-label="退出登录"
+          >
+            退出
+          </button>
         </div>
-      </div>
+      </header>
+
+      <main className="flex-1 pb-20">{children}</main>
+
+      <BottomNav route={route} runningCount={runningCount} />
     </div>
   );
 }
 
-function ResourceCard({
-  title,
-  description,
-  href,
+function BottomNav({
+  route,
+  runningCount,
 }: {
-  title: string;
-  description: string;
-  href: string;
+  route: Route;
+  runningCount: number;
+}) {
+  const navItems: Array<{
+    route: Route;
+    icon: string;
+    label: string;
+    badge?: number;
+  }> = [
+    { route: { page: "projects" }, icon: "📖", label: "工程" },
+    { route: { page: "characters" }, icon: "👤", label: "角色库" },
+    { route: { page: "publish" }, icon: "📤", label: "发布" },
+    {
+      route: { page: "tasks" },
+      icon: runningCount > 0 ? "⏳" : "📋",
+      label: "任务",
+      badge: runningCount > 0 ? runningCount : undefined,
+    },
+    { route: { page: "settings" }, icon: "⚙️", label: "设置" },
+  ];
+
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 bg-light dark:bg-dark border-t border-slate-200 dark:border-slate-800 z-10">
+      <div className="max-w-2xl mx-auto flex">
+        {navItems.map((item) => (
+          <NavButton
+            key={item.label}
+            route={item.route}
+            icon={item.icon}
+            label={item.label}
+            badge={item.badge}
+            active={isRouteActive(route, item.route)}
+          />
+        ))}
+      </div>
+    </nav>
+  );
+}
+
+function NavButton({
+  route,
+  active,
+  icon,
+  label,
+  badge,
+}: {
+  route: Route;
+  active: boolean;
+  icon: string;
+  label: string;
+  badge?: number;
 }) {
   return (
-    <div className="flex flex-col gap-2 bg-slate-200 dark:bg-slate-800 p-4 rounded-md h-28 overflow-auto">
-      <a href={href} className="text-sm underline hover:no-underline">
-        {title}
-      </a>
-      <p className="text-xs">{description}</p>
-    </div>
+    <button
+      onClick={() => navigate(route)}
+      className={`flex-1 flex flex-col items-center gap-0.5 py-2 text-xs relative transition-colors ${
+        active
+          ? "text-indigo-600 dark:text-indigo-400"
+          : "text-slate-400 hover:text-slate-600"
+      }`}
+      aria-label={label}
+      aria-current={active ? "page" : undefined}
+    >
+      <span className="text-lg" aria-hidden="true">
+        {icon}
+      </span>
+      <span>{label}</span>
+      {badge !== undefined && (
+        <span className="absolute top-1 right-1/4 w-4 h-4 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center">
+          {badge}
+        </span>
+      )}
+    </button>
   );
+}
+
+function isRouteActive(current: Route, target: Route): boolean {
+  if (current.page === target.page) {
+    if (current.page === "project" && target.page === "project") {
+      return current.projectId === target.projectId;
+    }
+    return true;
+  }
+  return false;
 }
