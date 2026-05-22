@@ -14,14 +14,8 @@ const VALID_STYLES = [
 ];
 const VALID_SIZES = ["1024x1024", "1024x1536", "1536x1024", "auto"];
 const VALID_QUALITIES = ["low", "medium", "high", "auto"];
-const VALID_MODELS = [
-  "gpt-4o-mini",
-  "gpt-4o",
-  "gpt-4.1-mini",
-  "gpt-4.1",
-  "gpt-5-mini",
-  "gpt-5",
-];
+const VALID_MODELS = ["gpt-4o-mini", "gpt-4o", "gpt-4.1-mini", "gpt-4.1"];
+
 const VALID_BUBBLE_MODES = ["chinese", "japanese", "english", "empty", "none"];
 const VALID_IMAGE_COUNTS = [1, 2, 3, 4];
 const VALID_PANEL_COUNTS = [2, 3, 4, 5, 6, 7, 8];

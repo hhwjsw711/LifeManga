@@ -836,9 +836,11 @@ async function callChatCompletionsForScript(
 
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      const response = await fetch(
-        "https://api.openai.com/v1/chat/completions",
-        {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 120_000);
+      let response: Response;
+      try {
+        response = await fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${apiKey}`,
@@ -850,8 +852,11 @@ async function callChatCompletionsForScript(
             max_completion_tokens: 4000,
             response_format: { type: "json_object" },
           }),
-        },
-      );
+          signal: controller.signal,
+        });
+      } finally {
+        clearTimeout(timeout);
+      }
 
       if (!response.ok) {
         const errorBody = await response.text();
@@ -909,9 +914,27 @@ async function callChatCompletionsForScript(
         continue;
       }
 
+      for (const panel of script.panels) {
+        for (const key of [
+          "dialogue",
+          "dialogueJa",
+          "narration",
+          "narrationJa",
+          "sfx",
+        ] as const) {
+          if (panel[key] === null || panel[key] === undefined) {
+            delete panel[key];
+          }
+        }
+      }
+
       return script;
     } catch (e: unknown) {
-      lastError = e instanceof Error ? e.message : String(e);
+      if (e instanceof DOMException && e.name === "AbortError") {
+        lastError = `请求超时 (120s)，模型 ${scriptModel} 响应过慢`;
+      } else {
+        lastError = e instanceof Error ? e.message : String(e);
+      }
       await addLog(
         ctx,
         jobId,

@@ -160,8 +160,6 @@ export const SCRIPT_MODELS = [
   { value: "gpt-4o", label: "GPT-4o" },
   { value: "gpt-4.1-mini", label: "GPT-4.1 Mini" },
   { value: "gpt-4.1", label: "GPT-4.1" },
-  { value: "gpt-5-mini", label: "GPT-5 Mini" },
-  { value: "gpt-5", label: "GPT-5" },
 ] as const;
 
 export const POSE_GROUPS = [
