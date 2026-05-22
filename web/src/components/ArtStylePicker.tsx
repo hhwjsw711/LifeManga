@@ -30,14 +30,14 @@ export function ArtStylePicker({
           key={s.id}
           type="button"
           onClick={() => handleClick(s.id)}
-          className={`flex flex-col items-center gap-1 px-2 py-2 rounded-lg border-2 transition-colors text-center ${
+          className={`flex flex-col items-center gap-1 px-2 py-2 rounded-card border-2 transition-colors text-center ${
             selected.includes(s.id)
-              ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30"
-              : "border-slate-200 dark:border-slate-700 hover:border-slate-400"
+              ? "border-ember bg-ember/8 dark:bg-ember/20"
+              : "border-cream-dark dark:border-ink-light hover:border-cream-darker dark:hover:border-ink-muted"
           }`}
         >
           <span className="text-sm">{s.displayName}</span>
-          <span className="text-[10px] text-slate-400">{s.subtitle}</span>
+          <span className="text-[10px] text-ink-muted">{s.subtitle}</span>
         </button>
       ))}
     </div>

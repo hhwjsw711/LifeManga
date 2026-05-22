@@ -1,45 +1,50 @@
-# Welcome to your Convex + React (Vite) + Convex Auth app
+# 漫画人生 (Manga Life)
 
-This is a [Convex](https://convex.dev/) project created with [`npm create convex`](https://www.npmjs.com/package/create-convex).
+将你的照片变成漫画的 AI 创作工具。
 
-After the initial setup (<2 minutes) you'll have a working full-stack app using:
+基于 Convex 全栈框架构建，使用 GPT 图像模型将用户上传的照片转化为日式漫画风格的图像，
+支持多种漫画风格（日常治愈风、暗黑剧情风等）、色彩模式和对话框文字生成。
 
-- Convex as your backend (database, server logic)
-- [React](https://react.dev/) as your frontend (web page interactivity)
-- [Vite](https://vitest.dev/) for optimized web hosting
-- [Tailwind](https://tailwindcss.com/) for building great looking UI
-- [Convex Auth](https://labs.convex.dev/auth) for authentication
+## 技术栈
 
-## Get started
+- **前端**: React 19 + TypeScript + Vite + Tailwind CSS 4
+- **后端**: [Convex](https://convex.dev/) — 实时数据库 + 服务端逻辑
+- **认证**: [Convex Auth](https://labs.convex.dev/auth) — 邮箱/密码登录
+- **AI**: OpenAI GPT 图像与文本模型
 
-If you just cloned this codebase and didn't use `npm create convex`, run:
+## 快速开始
 
-```
+```bash
 npm install
 npm run dev
 ```
 
-If you're reading this README on GitHub and want to use this template, run:
+开发服务器启动后访问 `http://localhost:5173`。
+
+## 环境变量
+
+复制 `.env.example` 为 `.env.local` 并填入配置：
 
 ```
-npm create convex@latest -- -t react-vite-convexauth
+CONVEX_DEPLOYMENT=
+VITE_CONVEX_URL=
+VITE_CONVEX_SITE_URL=
+OPENAI_API_KEY=sk-...
 ```
 
-For more information on how to configure Convex Auth, check out the [Convex Auth docs](https://labs.convex.dev/auth/).
+## 项目结构
 
-For more examples of different Convex Auth flows, check out this [example repo](https://www.convex.dev/templates/convex-auth).
+```
+web/
+├── src/
+│   ├── components/   # 可复用 UI 组件
+│   ├── pages/        # 页面组件
+│   ├── hooks/        # 自定义 Hooks
+│   └── lib/          # 工具函数与常量
+├── convex/           # Convex 后端（schema、mutation、action）
+└── public/           # 静态资源
+```
 
-## Learn more
+## 许可证
 
-To learn more about developing your project with Convex, check out:
-
-- The [Tour of Convex](https://docs.convex.dev/get-started) for a thorough introduction to Convex principles.
-- The rest of [Convex docs](https://docs.convex.dev/) to learn about all Convex features.
-- [Stack](https://stack.convex.dev/) for in-depth articles on advanced topics.
-
-## Join the community
-
-Join thousands of developers building full-stack apps with Convex:
-
-- Join the [Convex Discord community](https://convex.dev/community) to get help in real-time.
-- Follow [Convex on GitHub](https://github.com/get-convex/), star and contribute to the open-source implementation of Convex.
+[Apache 2.0](LICENSE.txt)

@@ -8,6 +8,7 @@ import { ImageInput } from "../components/ImageInput";
 import { Modal } from "../components/Modal";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { PosePickerSheet } from "../components/PosePickerSheet";
+import { Button } from "../components/Button";
 import { CHARACTER_ART_STYLES } from "../lib/constants";
 
 export function CharacterLibraryPage() {
@@ -21,7 +22,7 @@ export function CharacterLibraryPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
+    <div className="max-w-2xl mx-auto p-6">
       <PageHeader onCreate={() => setShowCreate(true)} />
 
       {showCreate && (
@@ -60,19 +61,16 @@ function PageHeader({ onCreate }: { onCreate: () => void }) {
   return (
     <div className="flex items-center justify-between mb-6">
       <h1 className="text-2xl font-bold">角色库</h1>
-      <button
-        onClick={onCreate}
-        className="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors"
-      >
+      <Button variant="primary" size="sm" onClick={onCreate}>
         + 新建角色
-      </button>
+      </Button>
     </div>
   );
 }
 
 function EmptyState() {
   return (
-    <div className="flex flex-col items-center justify-center h-64 text-slate-400">
+    <div className="flex flex-col items-center justify-center h-64 text-ink-muted">
       <p className="text-lg mb-2">还没有角色</p>
       <p className="text-sm">上传照片创建你的第一个漫画角色</p>
     </div>
@@ -123,10 +121,10 @@ function CharacterCard({
   return (
     <button
       type="button"
-      className="rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 cursor-pointer hover:shadow-md transition-shadow text-left w-full"
+      className="rounded-card overflow-hidden border-2 border-cream-dark dark:border-ink-light cursor-pointer hover:border-ember/50 dark:hover:border-ember/50 transition-colors text-left w-full"
       onClick={onClick}
     >
-      <div className="aspect-square bg-slate-200 dark:bg-slate-700">
+      <div className="aspect-square bg-cream-medium dark:bg-ink-light">
         {photoUrl ? (
           <img
             src={photoUrl}
@@ -142,7 +140,7 @@ function CharacterCard({
       <div className="p-2">
         <p className="text-sm font-medium truncate">{character.name}</p>
         <div className="flex items-center justify-between mt-1">
-          <span className="text-[10px] text-slate-400">
+          <span className="text-[10px] text-ink-muted">
             {views?.length ?? 0} 个视图
           </span>
           <button
@@ -150,7 +148,7 @@ function CharacterCard({
               e.stopPropagation();
               onDelete();
             }}
-            className="text-xs text-slate-400 hover:text-red-500 transition-colors"
+            className="text-xs text-ink-muted hover:text-error transition-colors"
             aria-label={`删除 ${character.name}`}
           >
             🗑
@@ -183,15 +181,15 @@ function CharacterDetailModal({
         <h2 className="font-bold text-lg">{character.name}</h2>
         <button
           onClick={onClose}
-          className="text-slate-400 text-xl hover:text-slate-600 transition-colors"
-          aria-label="关闭"
+          className="text-ink-muted text-xl hover:text-ink dark:hover:text-cream-light transition-colors"
+          aria-label="关闭 ⎋"
         >
           ×
         </button>
       </div>
 
       {character.bio && (
-        <p className="text-sm text-slate-500 mb-3">{character.bio}</p>
+        <p className="text-sm text-ink-muted mb-3">{character.bio}</p>
       )}
 
       <RenameSection
@@ -219,12 +217,13 @@ function CharacterDetailModal({
         ))}
       </div>
 
-      <button
+      <Button
+        variant="primary"
+        size="sm"
         onClick={() => setShowPosePicker(true)}
-        className="px-4 py-2 bg-indigo-500 text-white rounded-lg text-sm hover:bg-indigo-600 transition-colors"
       >
         生成更多姿势
-      </button>
+      </Button>
 
       {showPosePicker && (
         <PosePickerSheet
@@ -258,21 +257,18 @@ function RenameSection({
         value={newName}
         onChange={(e) => onNameChange(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && onEndRename()}
-        className="flex-1 px-2 py-1 border rounded bg-transparent text-sm"
+        className="flex-1 px-3 py-2 border-2 border-cream-dark dark:border-ink-light rounded-card bg-transparent text-sm focus:outline-none focus:border-ember transition-colors"
         autoFocus
         placeholder="角色名称"
       />
-      <button
-        onClick={onEndRename}
-        className="px-3 py-1 bg-indigo-500 text-white rounded text-sm hover:bg-indigo-600 transition-colors"
-      >
+      <Button variant="primary" size="sm" onClick={onEndRename}>
         保存
-      </button>
+      </Button>
     </div>
   ) : (
     <button
       onClick={onStartRename}
-      className="text-xs text-indigo-500 hover:text-indigo-600 transition-colors mb-3"
+      className="text-xs text-ember hover:text-ember-dark transition-colors mb-3"
     >
       重命名
     </button>
@@ -284,7 +280,7 @@ function CharacterViewCard({ view }: { view: Doc<"characterViews"> }) {
   const removeView = useMutation(api.characters.removeView);
 
   return (
-    <div className="relative rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
+    <div className="relative rounded-card overflow-hidden border-2 border-cream-dark dark:border-ink-light">
       {url ? (
         <img
           src={url}
@@ -292,16 +288,16 @@ function CharacterViewCard({ view }: { view: Doc<"characterViews"> }) {
           className="w-full aspect-square object-cover"
         />
       ) : (
-        <div className="w-full aspect-square bg-slate-200 dark:bg-slate-700 animate-pulse" />
+        <div className="w-full aspect-square bg-cream-medium dark:bg-ink-light animate-pulse" />
       )}
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 p-1">
-        <p className="text-[10px] text-white truncate">{view.label}</p>
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-ink/60 p-1">
+        <p className="text-[10px] text-cream-light truncate">{view.label}</p>
       </div>
       <button
         onClick={() => {
           if (confirm("删除此视图？")) void removeView({ viewId: view._id });
         }}
-        className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
+        className="absolute top-1 right-1 w-4 h-4 bg-error text-cream-light text-[10px] rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
         aria-label="删除视图"
       >
         ×
@@ -408,13 +404,11 @@ function CharacterCreateView({
   };
 
   return (
-    <div className="p-4 bg-white dark:bg-slate-800 rounded-lg border-2 border-indigo-200 dark:border-indigo-800 mb-4">
+    <div className="p-4 bg-cream-light dark:bg-ink-medium rounded-card border-2 border-ember/30 mb-4">
       <h3 className="font-medium mb-3">新建角色</h3>
       {errorMessage && (
-        <div className="mb-3 p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-          <p className="text-xs text-red-600 dark:text-red-400">
-            {errorMessage}
-          </p>
+        <div className="mb-3 p-3 bg-error/8 dark:bg-error/20 border border-error/30 dark:border-error/50 rounded-card">
+          <p className="text-xs text-error">{errorMessage}</p>
         </div>
       )}
       <div className="flex flex-col gap-3">
@@ -423,13 +417,13 @@ function CharacterCreateView({
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="角色名称"
-          className="w-full px-3 py-2 border-2 border-slate-200 dark:border-slate-700 rounded-lg bg-transparent"
+          className="w-full px-4 py-3 border-2 border-cream-dark dark:border-ink-light rounded-card bg-transparent focus:outline-none focus:border-ember transition-colors"
         />
         <textarea
           value={bio}
           onChange={(e) => setBio(e.target.value)}
           placeholder="角色简介（可选）"
-          className="w-full px-3 py-2 border-2 border-slate-200 dark:border-slate-700 rounded-lg bg-transparent resize-none h-16"
+          className="w-full px-4 py-3 border-2 border-cream-dark dark:border-ink-light rounded-card bg-transparent resize-none h-16 focus:outline-none focus:border-ember transition-colors"
         />
         <div>
           <p className="text-sm mb-2">上传照片</p>
@@ -438,15 +432,15 @@ function CharacterCreateView({
               <img
                 src={photoPreview}
                 alt="角色照片"
-                className="w-20 h-20 object-cover rounded-lg border"
+                className="w-20 h-20 object-cover rounded-card border-2 border-cream-dark dark:border-ink-light"
               />
               <button
                 onClick={() => {
                   setPhotoFile(null);
-                  URL.revokeObjectURL(photoPreview);
+                  if (photoPreview) URL.revokeObjectURL(photoPreview);
                   setPhotoPreview(null);
                 }}
-                className="text-xs text-red-500 hover:text-red-600 transition-colors"
+                className="text-xs text-error hover:text-red-600 transition-colors"
               >
                 清除
               </button>
@@ -469,10 +463,10 @@ function CharacterCreateView({
             <button
               type="button"
               onClick={() => setIsColor(false)}
-              className={`flex-1 py-2 rounded-lg border-2 text-sm transition-colors ${
+              className={`flex-1 py-2 rounded-card border-2 text-sm transition-colors ${
                 !isColor
-                  ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30 font-medium"
-                  : "border-slate-200 dark:border-slate-700"
+                  ? "border-ember bg-ember/8 dark:bg-ember/20 font-medium"
+                  : "border-cream-dark dark:border-ink-light"
               }`}
             >
               ⬛ 黑白
@@ -480,10 +474,10 @@ function CharacterCreateView({
             <button
               type="button"
               onClick={() => setIsColor(true)}
-              className={`flex-1 py-2 rounded-lg border-2 text-sm transition-colors ${
+              className={`flex-1 py-2 rounded-card border-2 text-sm transition-colors ${
                 isColor
-                  ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30 font-medium"
-                  : "border-slate-200 dark:border-slate-700"
+                  ? "border-ember bg-ember/8 dark:bg-ember/20 font-medium"
+                  : "border-cream-dark dark:border-ink-light"
               }`}
             >
               🌈 彩色
@@ -491,19 +485,18 @@ function CharacterCreateView({
           </div>
         </div>
         <div className="flex gap-2">
-          <button
+          <Button
+            variant="primary"
+            size="sm"
             onClick={() => void handleCreate()}
             disabled={isCreating || !name.trim() || !photoFile}
-            className="px-4 py-2 bg-indigo-500 text-white rounded-lg text-sm disabled:opacity-50 hover:bg-indigo-600 transition-colors"
+            loading={isCreating}
           >
-            {isCreating ? "创建中..." : "创建角色"}
-          </button>
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-slate-500 text-sm hover:text-slate-600 transition-colors"
-          >
+            创建角色
+          </Button>
+          <Button variant="ghost" size="sm" onClick={onClose}>
             取消
-          </button>
+          </Button>
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { api } from "../../convex/_generated/api";
 import { Id, Doc } from "../../convex/_generated/dataModel";
 import { navigate } from "../lib/router";
 import { LoadingSpinner } from "../components/LoadingSpinner";
+import { Button } from "../components/Button";
 
 export function ProjectListPage() {
   const projects = useQuery(api.projects.list);
@@ -48,7 +49,7 @@ export function ProjectListPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
+    <div className="max-w-2xl mx-auto p-6">
       <PageHeader onCreate={() => setShowCreate(true)} />
 
       {showCreate && (
@@ -92,19 +93,16 @@ function PageHeader({ onCreate }: { onCreate: () => void }) {
   return (
     <div className="flex items-center justify-between mb-6">
       <h1 className="text-2xl font-bold">工程</h1>
-      <button
-        onClick={onCreate}
-        className="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors"
-      >
+      <Button variant="primary" size="sm" onClick={onCreate}>
         + 新建工程
-      </button>
+      </Button>
     </div>
   );
 }
 
 function EmptyState() {
   return (
-    <div className="flex flex-col items-center justify-center h-64 text-slate-400">
+    <div className="flex flex-col items-center justify-center h-64 text-ink-muted">
       <p className="text-lg mb-2">还没有工程</p>
       <p className="text-sm">点击「新建工程」开始创作你的第一篇漫画</p>
     </div>
@@ -123,29 +121,23 @@ function CreateForm({
   onCancel: () => void;
 }) {
   return (
-    <div className="mb-4 p-4 bg-white dark:bg-slate-800 rounded-lg border-2 border-indigo-200 dark:border-indigo-800">
+    <div className="mb-4 p-4 bg-cream-light dark:bg-ink-medium rounded-card border-2 border-ember/30">
       <input
         type="text"
         value={name}
         onChange={(e) => onNameChange(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && onCreate()}
         placeholder="工程名称"
-        className="w-full px-3 py-2 border-2 border-slate-200 dark:border-slate-700 rounded-lg bg-transparent mb-2"
+        className="w-full px-4 py-3 border-2 border-cream-dark dark:border-ink-light rounded-card bg-transparent mb-3 focus:outline-none focus:border-ember transition-colors"
         autoFocus
       />
       <div className="flex gap-2">
-        <button
-          onClick={onCreate}
-          className="px-4 py-1.5 bg-indigo-500 text-white rounded-lg text-sm hover:bg-indigo-600 transition-colors"
-        >
+        <Button variant="primary" size="sm" onClick={onCreate}>
           创建
-        </button>
-        <button
-          onClick={onCancel}
-          className="px-4 py-1.5 text-slate-500 text-sm hover:text-slate-600 transition-colors"
-        >
+        </Button>
+        <Button variant="ghost" size="sm" onClick={onCancel}>
           取消
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -171,7 +163,7 @@ function ProjectList({
   onDelete: (args: { projectId: Id<"projects"> }) => void;
 }) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-3">
       {projects.map((project) => (
         <ProjectCard
           key={project._id}
@@ -215,11 +207,11 @@ function ProjectCard({
   return (
     <button
       type="button"
-      className="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:shadow-md transition-shadow cursor-pointer text-left w-full"
+      className="flex items-center gap-3 p-4 bg-cream-light dark:bg-ink-medium rounded-card border-2 border-cream-dark dark:border-ink-light hover:border-ember/50 dark:hover:border-ember/50 transition-colors cursor-pointer text-left w-full"
       onClick={onClick}
     >
       <div
-        className="w-12 h-12 rounded-lg bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xl"
+        className="w-12 h-12 rounded-card bg-cream-medium dark:bg-ink-light flex items-center justify-center text-xl"
         aria-hidden="true"
       >
         📖
@@ -236,14 +228,14 @@ function ProjectCard({
             onBlur={() => {
               if (renameValue.trim()) onFinishRename();
             }}
-            className="w-full px-2 py-1 border rounded bg-transparent text-sm"
+            className="w-full px-3 py-2 border-2 border-cream-dark dark:border-ink-light rounded-card bg-transparent text-sm focus:outline-none focus:border-ember transition-colors"
             autoFocus
             onClick={(e) => e.stopPropagation()}
           />
         ) : (
           <p className="font-medium truncate">{project.name}</p>
         )}
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-ink-muted">
           {new Date(project._creationTime).toLocaleDateString("zh-CN")}
         </p>
       </div>
@@ -253,7 +245,7 @@ function ProjectCard({
             e.stopPropagation();
             onStartRename();
           }}
-          className="px-2 py-1 text-xs text-slate-400 hover:text-indigo-500 transition-colors"
+          className="px-2 py-1 text-xs text-ink-muted hover:text-ember transition-colors"
         >
           重命名
         </button>
@@ -262,7 +254,7 @@ function ProjectCard({
             e.stopPropagation();
             onDelete();
           }}
-          className="px-2 py-1 text-xs text-slate-400 hover:text-red-500 transition-colors"
+          className="px-2 py-1 text-xs text-ink-muted hover:text-error transition-colors"
         >
           删除
         </button>

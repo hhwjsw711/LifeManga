@@ -1,38 +1,71 @@
 @import "tailwindcss";
 
 @theme {
-  --color-light: #ffffff;
-  --color-dark: #171717;
+  --color-ember: #f36a3f;
+  --color-ember-light: #f58560;
+  --color-ember-dark: #e05530;
+
+  --color-cream: #faf9f5;
+  --color-cream-light: #ffffff;
+  --color-cream-medium: #f5f4f0;
+  --color-cream-dark: #edece8;
+  --color-cream-darker: #e5e4e0;
+
+  --color-ink: #262626;
+  --color-ink-light: #404040;
+  --color-ink-medium: #1a1a1a;
+  --color-ink-muted: #636363;
+
+  --color-success: #4caf50;
+  --color-error: #ff3b30;
+  --color-warning: #f36a3f;
+
+  --radius-card: 12px;
+  --radius-pill: 100px;
+  --radius-sheet: 24px;
+  --radius-fab: 16px;
+  --radius-thumb: 8px;
 }
 
 @media (prefers-color-scheme: dark) {
   body {
-    color: var(--color-light);
-    background: var(--color-dark);
+    color: var(--color-cream-light);
+    background: var(--color-ink);
   }
 }
 
 @media (prefers-color-scheme: light) {
   body {
-    color: var(--color-dark);
-    background: var(--color-light);
+    color: var(--color-ink);
+    background: var(--color-cream);
   }
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-overflow-scrolling: touch;
+  -webkit-tap-highlight-color: transparent;
+}
+
+input,
+select,
+textarea,
+button {
+  font-size: 16px;
 }
 
 select option {
-  background: var(--color-light);
-  color: var(--color-dark);
+  background: var(--color-cream-light);
+  color: var(--color-ink);
 }
 
 @media (prefers-color-scheme: dark) {
   select option {
-    background: #1e293b;
-    color: var(--color-light);
+    background: var(--color-ink-light);
+    color: var(--color-cream-light);
   }
 }

@@ -14,7 +14,7 @@ export default function App() {
   const route = useHashRoute();
 
   return (
-    <div className="min-h-screen bg-light dark:bg-dark">
+    <div className="min-h-screen bg-cream dark:bg-ink">
       <Unauthenticated>
         <div className="min-h-screen flex items-center justify-center">
           <SignInForm />
@@ -61,12 +61,12 @@ function AppShell({
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="sticky top-0 z-10 bg-light dark:bg-dark border-b border-slate-200 dark:border-slate-800">
-        <div className="max-w-2xl mx-auto flex items-center justify-between px-4 py-3">
-          <h1 className="text-lg font-bold">LifeManga</h1>
+      <header className="sticky top-0 z-10 bg-cream-light/95 dark:bg-ink-medium/95 backdrop-blur-sm border-b border-cream-dark dark:border-ink-light pt-[env(safe-area-inset-top,0px)]">
+        <div className="max-w-2xl mx-auto flex items-center justify-between px-6 py-3">
+          <h1 className="text-lg font-bold">漫画人生</h1>
           <button
             onClick={() => void signOut()}
-            className="text-sm text-slate-400 hover:text-slate-600 transition-colors"
+            className="text-sm text-ink-muted hover:text-ink dark:hover:text-cream-light transition-colors"
             aria-label="退出登录"
           >
             退出
@@ -96,7 +96,6 @@ function BottomNav({
   }> = [
     { route: { page: "projects" }, icon: "📖", label: "工程" },
     { route: { page: "characters" }, icon: "👤", label: "角色库" },
-    { route: { page: "publish" }, icon: "📤", label: "发布" },
     {
       route: { page: "tasks" },
       icon: runningCount > 0 ? "⏳" : "📋",
@@ -107,7 +106,7 @@ function BottomNav({
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-light dark:bg-dark border-t border-slate-200 dark:border-slate-800 z-10">
+    <nav className="fixed bottom-0 left-0 right-0 bg-cream-light/95 dark:bg-ink-medium/95 backdrop-blur-sm border-t border-cream-dark dark:border-ink-light z-10 pb-[env(safe-area-inset-bottom,0px)]">
       <div className="max-w-2xl mx-auto flex">
         {navItems.map((item) => (
           <NavButton
@@ -142,8 +141,8 @@ function NavButton({
       onClick={() => navigate(route)}
       className={`flex-1 flex flex-col items-center gap-0.5 py-2 text-xs relative transition-colors ${
         active
-          ? "text-indigo-600 dark:text-indigo-400"
-          : "text-slate-400 hover:text-slate-600"
+          ? "text-ember dark:text-ember-light"
+          : "text-ink-muted hover:text-ink dark:hover:text-cream-light"
       }`}
       aria-label={label}
       aria-current={active ? "page" : undefined}
@@ -153,7 +152,7 @@ function NavButton({
       </span>
       <span>{label}</span>
       {badge !== undefined && (
-        <span className="absolute top-1 right-1/4 w-4 h-4 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center">
+        <span className="absolute top-1 right-1/4 w-4 h-4 bg-ember text-cream-light text-[10px] rounded-full flex items-center justify-center">
           {badge}
         </span>
       )}

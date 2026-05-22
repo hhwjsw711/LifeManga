@@ -204,7 +204,7 @@ export function StyleIcon({ styleId }: { styleId: string }) {
     <div className="rounded-md overflow-hidden">
       {STYLE_ICONS[styleId] ?? (
         <div
-          className="w-9 h-9 rounded-md flex items-center justify-center bg-slate-400"
+          className="w-9 h-9 rounded-md flex items-center justify-center bg-ink-muted"
           aria-hidden="true"
         >
           <span className="text-white text-xs font-bold">

@@ -32,7 +32,7 @@ export function ImageInput({
         {images.map((img, i) => (
           <div
             key={img.id ?? i}
-            className="relative w-20 h-20 rounded-lg overflow-hidden border-2 border-slate-200 dark:border-slate-700"
+            className="relative w-20 h-20 rounded-card overflow-hidden border-2 border-cream-dark dark:border-ink-light"
           >
             <img
               src={img.url}
@@ -43,7 +43,7 @@ export function ImageInput({
               <button
                 type="button"
                 onClick={() => onRemove(i)}
-                className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs flex items-center justify-center rounded-bl-lg leading-none"
+                className="absolute top-0 right-0 w-5 h-5 bg-error text-cream-light text-xs flex items-center justify-center rounded-bl-card leading-none"
                 aria-label="移除图片"
               >
                 ×
@@ -55,7 +55,7 @@ export function ImageInput({
           <button
             type="button"
             onClick={() => inputRef.current?.click()}
-            className="w-20 h-20 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 flex items-center justify-center text-slate-400 hover:border-indigo-400 hover:text-indigo-400 transition-colors"
+            className="w-20 h-20 rounded-card border-2 border-dashed border-cream-darker dark:border-ink-muted flex items-center justify-center text-ink-muted hover:border-ember hover:text-ember transition-colors"
           >
             <span className="text-2xl">+</span>
           </button>

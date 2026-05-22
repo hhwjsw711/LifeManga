@@ -23,14 +23,14 @@ class ErrorBoundary extends Component<
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex flex-col items-center justify-center gap-4 p-4">
-          <p className="text-lg font-medium text-slate-700 dark:text-slate-300">
+        <div className="min-h-screen flex flex-col items-center justify-center gap-4 p-4 bg-cream dark:bg-ink">
+          <p className="text-lg font-medium text-ink dark:text-cream-light">
             出错了
           </p>
-          <p className="text-sm text-slate-400">请刷新页面重试</p>
+          <p className="text-sm text-ink-muted">请刷新页面重试</p>
           <button
             onClick={() => this.setState({ hasError: false })}
-            className="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors"
+            className="px-4 py-2 bg-ember text-cream-light rounded-pill hover:bg-ember-dark transition-colors"
           >
             重试
           </button>

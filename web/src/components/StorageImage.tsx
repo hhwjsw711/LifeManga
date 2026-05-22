@@ -17,7 +17,7 @@ function StorageImageInner({
   if (!url) {
     return (
       <div
-        className={`bg-slate-200 dark:bg-slate-700 animate-pulse ${className ?? ""}`}
+        className={`bg-cream-dark dark:bg-ink-light animate-pulse ${className ?? ""}`}
       />
     );
   }
@@ -25,7 +25,7 @@ function StorageImageInner({
   if (error) {
     return (
       <div
-        className={`bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-400 text-xs ${className ?? ""}`}
+        className={`bg-cream-dark dark:bg-ink-light flex items-center justify-center text-ink-muted text-xs ${className ?? ""}`}
       >
         加载失败
       </div>
@@ -54,7 +54,7 @@ export function StorageImage({
   if (!storageId) {
     return (
       <div
-        className={`bg-slate-200 dark:bg-slate-700 animate-pulse ${className ?? ""}`}
+        className={`bg-cream-dark dark:bg-ink-light animate-pulse ${className ?? ""}`}
       />
     );
   }

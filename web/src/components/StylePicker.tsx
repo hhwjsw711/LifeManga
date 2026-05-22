@@ -15,15 +15,15 @@ export function StylePicker({
           key={s.id}
           type="button"
           onClick={() => onChange(s.id)}
-          className={`shrink-0 flex flex-col items-center gap-1 px-3 py-2 rounded-lg border-2 transition-colors ${
+          className={`shrink-0 flex flex-col items-center gap-1 px-3 py-2 rounded-card border-2 transition-colors ${
             value === s.id
-              ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30"
-              : "border-slate-200 dark:border-slate-700 hover:border-slate-400"
+              ? "border-ember bg-ember/8 dark:bg-ember/20"
+              : "border-cream-dark dark:border-ink-light hover:border-cream-darker dark:hover:border-ink-muted"
           }`}
         >
           <StyleIcon styleId={s.id} />
           <span className="text-xs whitespace-nowrap">{s.displayName}</span>
-          <span className="text-[10px] text-slate-400 whitespace-nowrap">
+          <span className="text-[10px] text-ink-muted whitespace-nowrap">
             {s.subtitle}
           </span>
         </button>

@@ -11,6 +11,7 @@ export function Modal({
 }) {
   const contentRef = useRef<HTMLDivElement>(null);
   const onCloseRef = useRef(onClose);
+  const triggerRef = useRef<HTMLElement | null>(null);
   const modalId = useId();
 
   useEffect(() => {
@@ -18,6 +19,8 @@ export function Modal({
   }, [onClose]);
 
   useEffect(() => {
+    triggerRef.current = document.activeElement as HTMLElement;
+
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onCloseRef.current();
       if (e.key === "Tab" && contentRef.current) {
@@ -38,7 +41,13 @@ export function Modal({
     };
     document.addEventListener("keydown", handleKey);
     contentRef.current?.focus();
-    return () => document.removeEventListener("keydown", handleKey);
+
+    return () => {
+      document.removeEventListener("keydown", handleKey);
+      if (triggerRef.current) {
+        triggerRef.current.focus();
+      }
+    };
   }, []);
 
   const handleBackdropClick = useCallback(
@@ -50,7 +59,7 @@ export function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 bg-ink/70 flex items-center justify-center p-4"
       onClick={handleBackdropClick}
       role="presentation"
       aria-hidden="true"
@@ -59,7 +68,7 @@ export function Modal({
         ref={contentRef}
         tabIndex={-1}
         id={modalId}
-        className="bg-white dark:bg-slate-800 rounded-xl max-w-lg w-full max-h-[80vh] overflow-auto p-4 outline-none"
+        className="bg-cream-light dark:bg-ink-medium rounded-sheet max-w-lg w-full max-h-[80vh] overflow-auto p-6 outline-none shadow-xl"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"

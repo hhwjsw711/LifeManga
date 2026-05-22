@@ -9,13 +9,6 @@ import {
   MangaPanel,
   useGenerationState,
 } from "../hooks/useMangaGenerator";
-
-const INITIAL_GENERATION_STATE: GenerationState = {
-  phase: "idle",
-  stageMessage: "",
-  errorMessage: null,
-  script: null,
-};
 import { StylePicker } from "../components/StylePicker";
 import { BubbleModePicker } from "../components/BubbleModePicker";
 import { ImageInput } from "../components/ImageInput";
@@ -23,9 +16,17 @@ import { ColorModeToggle } from "../components/ColorModeToggle";
 import { StoryModeToggle } from "../components/StoryModeToggle";
 import { SelectField } from "../components/SelectField";
 import { ErrorBanner } from "../components/ErrorBanner";
+import { Button } from "../components/Button";
 import { MANGA_STYLES, IMAGE_SIZES, IMAGE_QUALITIES } from "../lib/constants";
 import { buildBubbleDirective } from "../../convex/lib/prompts";
 import { navigate } from "../lib/router";
+
+const INITIAL_GENERATION_STATE: GenerationState = {
+  phase: "idle",
+  stageMessage: "",
+  errorMessage: null,
+  script: null,
+};
 
 export function HomePage({ projectId }: { projectId: Id<"projects"> }) {
   const settings = useQuery(api.settings.get);
@@ -380,13 +381,19 @@ export function HomePage({ projectId }: { projectId: Id<"projects"> }) {
         />
       )}
 
-      <GenerateButton
+      <Button
+        variant="primary"
+        size="lg"
+        loading={isGenerating}
         onClick={() => void handleGenerate()}
-        disabled={isGenerating}
-        phase={generation.phase}
-        stageMessage={generation.stageMessage}
-        storyMode={storyMode}
-      />
+        className="w-full"
+      >
+        {generation.phase === "scriptReady"
+          ? "用这个剧本作画"
+          : storyMode
+            ? "构思剧情"
+            : "生成漫画"}
+      </Button>
 
       {isGenerating && <GenerationProgress message={generation.stageMessage} />}
 
@@ -711,13 +718,13 @@ function PreviousPageSection({
             <img
               src={previousPageImage.preview}
               alt="上一页"
-              className="w-16 h-16 object-cover rounded-lg border"
+              className="w-16 h-16 object-cover rounded-card border-2 border-cream-dark dark:border-ink-light"
             />
           )}
           <button
             type="button"
             onClick={onClear}
-            className="text-xs text-red-500 hover:text-red-600 transition-colors"
+            className="text-xs text-error hover:text-red-600 transition-colors"
           >
             清除
           </button>
@@ -731,7 +738,7 @@ function PreviousPageSection({
                 const itemId = e.target.value as Id<"mangaItems">;
                 if (itemId) onSelect(itemId);
               }}
-              className="text-sm border rounded px-2 py-1 bg-transparent"
+              className="text-sm border-2 border-cream-dark dark:border-ink-light rounded-card px-2 py-1 bg-transparent focus:outline-none focus:border-ember"
             >
               <option value="">从历史选择</option>
               {projectItems.map((item) => (
@@ -766,10 +773,10 @@ function CharacterSection({
             key={char._id}
             type="button"
             onClick={() => onToggle(char._id)}
-            className={`px-3 py-1.5 rounded-full text-sm border-2 transition-colors ${
+            className={`px-3 py-1.5 rounded-pill text-sm border-2 transition-colors ${
               loadedCharacterIds.includes(char._id)
-                ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30"
-                : "border-slate-200 dark:border-slate-700"
+                ? "border-ember bg-ember/8 dark:bg-ember/20 text-ember-dark dark:text-ember-light"
+                : "border-cream-dark dark:border-ink-light"
             }`}
           >
             {char.name}
@@ -824,7 +831,7 @@ function PromptSection({
         value={userPrompt}
         onChange={(e) => onPromptChange(e.target.value)}
         placeholder="描述你想要的画面效果..."
-        className="w-full px-3 py-2 border-2 border-slate-200 dark:border-slate-700 rounded-lg bg-transparent text-sm resize-none h-20"
+        className="w-full px-4 py-3 border-2 border-cream-dark dark:border-ink-light rounded-card bg-cream-light dark:bg-ink-medium text-sm resize-none h-20 focus:outline-none focus:border-ember transition-colors"
       />
     </section>
   );
@@ -847,10 +854,10 @@ function AdvancedSettings({
 }) {
   return (
     <details>
-      <summary className="text-sm text-slate-500 cursor-pointer">
+      <summary className="text-sm text-ink-muted cursor-pointer hover:text-ink transition-colors">
         高级设置
       </summary>
-      <div className="flex flex-col gap-3 mt-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+      <div className="flex flex-col gap-3 mt-3 p-4 bg-cream-medium dark:bg-ink-medium/50 rounded-card">
         <SelectField
           label="图片数量"
           value={imageCount}
@@ -905,13 +912,13 @@ function ScriptEditor({
   };
 
   return (
-    <section className="p-4 bg-white dark:bg-slate-800 rounded-lg border-2 border-indigo-200 dark:border-indigo-800">
+    <section className="p-4 bg-cream-light dark:bg-ink-medium rounded-card border-2 border-ember/30">
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-medium">剧本编辑</h3>
         <button
           type="button"
           onClick={onReset}
-          className="text-xs text-slate-500 hover:text-slate-600 transition-colors"
+          className="text-xs text-ink-muted hover:text-ink transition-colors"
         >
           重新构思
         </button>
@@ -921,7 +928,7 @@ function ScriptEditor({
           type="text"
           value={script.title}
           onChange={(e) => onScriptChange({ ...script, title: e.target.value })}
-          className="w-full px-2 py-1 border rounded bg-transparent text-sm font-medium"
+          className="w-full px-3 py-2 border-2 border-cream-dark dark:border-ink-light rounded-card bg-transparent text-sm font-medium focus:outline-none focus:border-ember transition-colors"
           placeholder="标题"
         />
         <input
@@ -930,7 +937,7 @@ function ScriptEditor({
           onChange={(e) =>
             onScriptChange({ ...script, synopsis: e.target.value })
           }
-          className="w-full px-2 py-1 border rounded bg-transparent text-sm"
+          className="w-full px-3 py-2 border-2 border-cream-dark dark:border-ink-light rounded-card bg-transparent text-sm focus:outline-none focus:border-ember transition-colors"
           placeholder="简介"
         />
         {script.panels.map((panel, i) => (
@@ -951,12 +958,12 @@ function PanelEditor({
   onUpdate: (index: number, updates: Partial<MangaPanel>) => void;
 }) {
   return (
-    <div className="p-2 bg-slate-50 dark:bg-slate-900 rounded border">
-      <p className="text-xs text-slate-400 mb-1">第 {index + 1} 格</p>
+    <div className="p-3 bg-cream-medium dark:bg-ink/50 rounded-thumb border border-cream-dark dark:border-ink-light">
+      <p className="text-xs text-ink-muted mb-1">第 {index + 1} 格</p>
       <textarea
         value={panel.description}
         onChange={(e) => onUpdate(index, { description: e.target.value })}
-        className="w-full px-2 py-1 border rounded bg-transparent text-xs resize-none h-16 mb-1"
+        className="w-full px-3 py-2 border-2 border-cream-dark dark:border-ink-light rounded-card bg-transparent text-xs resize-none h-16 mb-1 focus:outline-none focus:border-ember transition-colors"
         placeholder="画面描述"
       />
       <div className="grid grid-cols-2 gap-1">
@@ -965,7 +972,7 @@ function PanelEditor({
           onChange={(e) =>
             onUpdate(index, { dialogue: e.target.value || undefined })
           }
-          className="px-2 py-1 border rounded bg-transparent text-xs"
+          className="px-3 py-2 border-2 border-cream-dark dark:border-ink-light rounded-card bg-transparent text-xs focus:outline-none focus:border-ember transition-colors"
           placeholder="对话（中文）"
         />
         <input
@@ -973,7 +980,7 @@ function PanelEditor({
           onChange={(e) =>
             onUpdate(index, { narration: e.target.value || undefined })
           }
-          className="px-2 py-1 border rounded bg-transparent text-xs"
+          className="px-3 py-2 border-2 border-cream-dark dark:border-ink-light rounded-card bg-transparent text-xs focus:outline-none focus:border-ember transition-colors"
           placeholder="旁白"
         />
         <input
@@ -981,7 +988,7 @@ function PanelEditor({
           onChange={(e) =>
             onUpdate(index, { dialogueJa: e.target.value || undefined })
           }
-          className="px-2 py-1 border rounded bg-transparent text-xs"
+          className="px-3 py-2 border-2 border-cream-dark dark:border-ink-light rounded-card bg-transparent text-xs focus:outline-none focus:border-ember transition-colors"
           placeholder="对话（日文）"
         />
         <input
@@ -989,7 +996,7 @@ function PanelEditor({
           onChange={(e) =>
             onUpdate(index, { sfx: e.target.value || undefined })
           }
-          className="px-2 py-1 border rounded bg-transparent text-xs"
+          className="px-3 py-2 border-2 border-cream-dark dark:border-ink-light rounded-card bg-transparent text-xs focus:outline-none focus:border-ember transition-colors"
           placeholder="拟声词"
         />
       </div>
@@ -997,48 +1004,12 @@ function PanelEditor({
   );
 }
 
-function GenerateButton({
-  onClick,
-  disabled,
-  phase,
-  stageMessage,
-  storyMode,
-}: {
-  onClick: () => void;
-  disabled: boolean;
-  phase: string;
-  stageMessage: string;
-  storyMode: boolean;
-}) {
-  const buttonText = disabled
-    ? stageMessage
-    : phase === "scriptReady"
-      ? "用这个剧本作画"
-      : storyMode
-        ? "构思剧情"
-        : "生成漫画";
-
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className={`w-full py-3 rounded-lg font-medium text-white transition-colors ${
-        disabled
-          ? "bg-slate-400 cursor-not-allowed"
-          : "bg-indigo-500 hover:bg-indigo-600"
-      }`}
-    >
-      {buttonText}
-    </button>
-  );
-}
-
 function GenerationProgress({ message }: { message: string }) {
   return (
     <div className="flex flex-col items-center gap-2 py-4">
-      <div className="animate-spin w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full" />
-      <p className="text-sm text-slate-500">{message}</p>
-      <p className="text-xs text-slate-400">
+      <div className="animate-spin w-8 h-8 border-4 border-ember border-t-transparent rounded-full" />
+      <p className="text-sm text-ink-muted">{message}</p>
+      <p className="text-xs text-ink-muted/70">
         可以切换到其他页面，生成完成后会自动保存
       </p>
     </div>
@@ -1054,18 +1025,18 @@ function GenerationComplete({
 }) {
   return (
     <div className="flex flex-col items-center gap-2 py-4">
-      <p className="text-sm text-green-600 font-medium">
+      <p className="text-sm text-success font-medium">
         ✓ 生成完成！请查看历史记录
       </p>
       <button
         onClick={() => navigate({ page: "project", projectId })}
-        className="text-sm text-indigo-500 underline hover:text-indigo-600 transition-colors"
+        className="text-sm text-ember hover:text-ember-dark transition-colors underline"
       >
         查看历史记录
       </button>
       <button
         onClick={onReset}
-        className="text-sm text-slate-500 hover:text-slate-600 transition-colors"
+        className="text-sm text-ink-muted hover:text-ink transition-colors"
       >
         继续创作
       </button>

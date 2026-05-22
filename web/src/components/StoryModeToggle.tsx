@@ -16,11 +16,11 @@ export function StoryModeToggle({
         <button
           type="button"
           onClick={() => onStoryModeChange(!storyMode)}
-          className={`w-10 h-6 rounded-full transition-colors ${storyMode ? "bg-indigo-500" : "bg-slate-300 dark:bg-slate-600"}`}
+          className={`w-10 h-6 rounded-full transition-colors flex items-center ${storyMode ? "bg-ember" : "bg-cream-darker dark:bg-ink-muted"}`}
           aria-label="故事模式开关"
         >
           <div
-            className={`w-4 h-4 bg-white rounded-full transition-transform ${storyMode ? "translate-x-5" : "translate-x-1"} mt-1`}
+            className={`w-4 h-4 bg-white rounded-full transition-transform ${storyMode ? "translate-x-5" : "translate-x-1"}`}
           />
         </button>
       </div>
@@ -31,10 +31,10 @@ export function StoryModeToggle({
               key={n}
               type="button"
               onClick={() => onPanelCountChange(n)}
-              className={`px-3 py-1 rounded-lg text-sm border-2 transition-colors ${
+              className={`px-3 py-1 rounded-card text-sm border-2 transition-colors ${
                 panelCount === n
-                  ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30"
-                  : "border-slate-200 dark:border-slate-700"
+                  ? "border-ember bg-ember/8 dark:bg-ember/20"
+                  : "border-cream-dark dark:border-ink-light"
               }`}
             >
               {n} 格

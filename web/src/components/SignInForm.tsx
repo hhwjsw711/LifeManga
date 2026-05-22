@@ -1,5 +1,6 @@
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useState } from "react";
+import { Button } from "./Button";
 
 export function SignInForm() {
   const { signIn } = useAuthActions();
@@ -10,8 +11,8 @@ export function SignInForm() {
   return (
     <div className="flex flex-col gap-6 w-80 mx-auto">
       <div className="text-center">
-        <h1 className="text-3xl font-bold mb-2">LifeManga</h1>
-        <p className="text-slate-400">将你的照片变成漫画</p>
+        <h1 className="text-3xl font-bold mb-2">漫画人生</h1>
+        <p className="text-ink-muted">将你的照片变成漫画</p>
       </div>
       <form
         className="flex flex-col gap-3"
@@ -30,7 +31,7 @@ export function SignInForm() {
         }}
       >
         <input
-          className="px-3 py-2 border-2 border-slate-200 dark:border-slate-700 rounded-lg bg-transparent"
+          className="px-4 py-3 border-2 border-cream-dark dark:border-ink-light rounded-card bg-transparent focus:outline-none focus:border-ember transition-colors"
           type="email"
           name="email"
           placeholder="邮箱"
@@ -39,7 +40,7 @@ export function SignInForm() {
           autoComplete="email"
         />
         <input
-          className="px-3 py-2 border-2 border-slate-200 dark:border-slate-700 rounded-lg bg-transparent"
+          className="px-4 py-3 border-2 border-cream-dark dark:border-ink-light rounded-card bg-transparent focus:outline-none focus:border-ember transition-colors"
           type="password"
           name="password"
           placeholder="密码"
@@ -47,29 +48,30 @@ export function SignInForm() {
           required
           autoComplete={flow === "signIn" ? "current-password" : "new-password"}
         />
-        <button
-          className="w-full py-2 bg-indigo-500 text-white rounded-lg font-medium hover:bg-indigo-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          type="submit"
-          disabled={isSubmitting}
+        <Button
+          variant="primary"
+          size="lg"
+          className="w-full"
+          loading={isSubmitting}
         >
           {isSubmitting ? "..." : flow === "signIn" ? "登录" : "注册"}
-        </button>
+        </Button>
         <button
           type="button"
           onClick={() => {
             setFlow(flow === "signIn" ? "signUp" : "signIn");
             setError(null);
           }}
-          className="text-sm text-slate-400 hover:text-indigo-500"
+          className="text-sm text-ink-muted hover:text-ember transition-colors"
         >
           {flow === "signIn" ? "没有账户？注册" : "已有账户？登录"}
         </button>
         {error && (
           <div
             role="alert"
-            className="p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
+            className="p-3 bg-error/8 dark:bg-error/20 border border-error/30 dark:border-error/50 rounded-card"
           >
-            <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
+            <p className="text-xs text-error">{error}</p>
           </div>
         )}
       </form>

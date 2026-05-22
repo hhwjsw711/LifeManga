@@ -4,6 +4,7 @@ import { api } from "../../convex/_generated/api";
 import { Id, Doc } from "../../convex/_generated/dataModel";
 import { useStorageUrl } from "../hooks/useStorage";
 import { Modal } from "../components/Modal";
+import { Button } from "../components/Button";
 
 export function HistoryPage({ projectId }: { projectId: Id<"projects"> }) {
   const items = useQuery(api.mangaItems.listByProject, { projectId });
@@ -53,7 +54,7 @@ export function HistoryPage({ projectId }: { projectId: Id<"projects"> }) {
 function LoadingState() {
   return (
     <div className="flex items-center justify-center h-32">
-      <div className="animate-spin w-6 h-6 border-[3px] border-indigo-500 border-t-transparent rounded-full" />
+      <div className="animate-spin w-6 h-6 border-[3px] border-ember border-t-transparent rounded-full" />
     </div>
   );
 }
@@ -69,20 +70,20 @@ function FilterTabs({
     <div className="flex gap-2">
       <button
         onClick={() => showFavoritesOnly && onToggle()}
-        className={`px-3 py-1 rounded-lg text-sm transition-colors ${
+        className={`px-4 py-1.5 rounded-pill text-sm transition-colors ${
           !showFavoritesOnly
-            ? "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600"
-            : "text-slate-500 hover:text-slate-600"
+            ? "bg-ember/10 dark:bg-ember/20 text-ember-dark dark:text-ember-light"
+            : "text-ink-muted"
         }`}
       >
         全部
       </button>
       <button
         onClick={() => !showFavoritesOnly && onToggle()}
-        className={`px-3 py-1 rounded-lg text-sm transition-colors ${
+        className={`px-4 py-1.5 rounded-pill text-sm transition-colors ${
           showFavoritesOnly
-            ? "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600"
-            : "text-slate-500 hover:text-slate-600"
+            ? "bg-ember/10 dark:bg-ember/20 text-ember-dark dark:text-ember-light"
+            : "text-ink-muted"
         }`}
       >
         收藏
@@ -93,7 +94,7 @@ function FilterTabs({
 
 function EmptyState({ showFavoritesOnly }: { showFavoritesOnly: boolean }) {
   return (
-    <div className="flex flex-col items-center justify-center h-32 text-slate-400">
+    <div className="flex flex-col items-center justify-center h-32 text-ink-muted">
       <p className="text-sm">
         {showFavoritesOnly ? "没有收藏的作品" : "还没有作品，去创作吧！"}
       </p>
@@ -145,10 +146,10 @@ function HistoryCard({
 
   return (
     <div
-      className="rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 cursor-pointer hover:shadow-md transition-shadow"
+      className="rounded-card overflow-hidden border-2 border-cream-dark dark:border-ink-light cursor-pointer hover:border-ember/50 dark:hover:border-ember/50 transition-colors"
       onClick={onClick}
     >
-      <div className="aspect-[3/4] bg-slate-200 dark:bg-slate-700">
+      <div className="aspect-[3/4] bg-cream-medium dark:bg-ink-light">
         {coverUrl ? (
           <img
             src={coverUrl}
@@ -156,7 +157,7 @@ function HistoryCard({
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-slate-400">
+          <div className="w-full h-full flex items-center justify-center text-ink-muted">
             加载中...
           </div>
         )}
@@ -167,7 +168,7 @@ function HistoryCard({
             new Date(item._creationTime).toLocaleString("zh-CN")}
         </p>
         <div className="flex items-center justify-between mt-1">
-          <span className="text-[10px] text-slate-400">{item.style}</span>
+          <span className="text-[10px] text-ink-muted">{item.style}</span>
           <div className="flex gap-1">
             <button
               onClick={(e) => {
@@ -184,7 +185,7 @@ function HistoryCard({
                 e.stopPropagation();
                 onDelete();
               }}
-              className="text-xs text-slate-400 hover:text-red-500 transition-colors"
+              className="text-xs text-ink-muted hover:text-error transition-colors"
               aria-label="删除"
             >
               🗑
@@ -216,7 +217,7 @@ function MangaDetailModal({
     try {
       const blob = await (await fetch(firstImageUrl)).blob();
       await navigator.share({
-        title: item.storyScript?.title ?? "LifeManga 作品",
+        title: item.storyScript?.title ?? "漫画人生 作品",
         text: item.storyScript?.synopsis ?? "",
         files: [new File([blob], "manga.png", { type: "image/png" })],
       });
@@ -228,11 +229,13 @@ function MangaDetailModal({
   return (
     <Modal onClose={onClose}>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="font-bold">{item.storyScript?.title ?? "漫画作品"}</h2>
+        <h2 className="font-bold text-lg">
+          {item.storyScript?.title ?? "漫画作品"}
+        </h2>
         <button
           onClick={onClose}
-          className="text-slate-400 text-xl hover:text-slate-600 transition-colors"
-          aria-label="关闭"
+          className="text-ink-muted text-xl hover:text-ink dark:hover:text-cream-light transition-colors"
+          aria-label="关闭 ⎋"
         >
           ×
         </button>
@@ -242,19 +245,22 @@ function MangaDetailModal({
         {item.storyScript && <ScriptDisplay script={item.storyScript} />}
         <ItemMetadata item={item} />
         <div className="flex gap-2">
-          <button
+          <Button
+            variant="secondary"
+            size="sm"
             onClick={() => void toggleFavorite({ itemId })}
-            className="flex-1 px-4 py-2 rounded-lg border text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+            className="flex-1"
           >
             {item.isFavorite ? "取消收藏" : "收藏"}
-          </button>
+          </Button>
           {canShare && (
-            <button
+            <Button
+              variant="primary"
+              size="sm"
               onClick={() => void handleShare()}
-              className="px-4 py-2 rounded-lg bg-indigo-500 text-white text-sm hover:bg-indigo-600 transition-colors"
             >
               分享
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -284,15 +290,15 @@ function StorageImageDetail({
     return (
       <div
         key={index}
-        className="bg-slate-200 dark:bg-slate-700 h-64 rounded-lg animate-pulse"
+        className="bg-cream-medium dark:bg-ink-light h-64 rounded-card animate-pulse"
       />
     );
   return (
-    <div key={index} className="rounded-lg overflow-hidden group relative">
+    <div key={index} className="rounded-card overflow-hidden group relative">
       <img src={url} alt={`图片 ${index + 1}`} className="w-full" />
       <button
         onClick={() => void downloadImage(url, `manga-page-${index + 1}.png`)}
-        className="absolute bottom-2 right-2 px-2 py-1 bg-black/60 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/80"
+        className="absolute bottom-2 right-2 px-3 py-1.5 bg-ink/70 text-cream-light text-xs rounded-card opacity-0 group-hover:opacity-100 transition-opacity hover:bg-ink/90"
         aria-label="下载图片"
       >
         下载
@@ -330,17 +336,20 @@ function ScriptDisplay({
   };
 }) {
   return (
-    <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg">
+    <div className="p-4 bg-cream-medium dark:bg-ink-light rounded-card">
       <p className="text-sm font-medium mb-1">{script.title}</p>
-      <p className="text-xs text-slate-500 mb-2">{script.synopsis}</p>
+      <p className="text-xs text-ink-muted mb-2">{script.synopsis}</p>
       {script.panels.map((panel, i) => (
         <div key={i} className="text-xs mb-1">
-          <span className="text-slate-400">第{i + 1}格：</span>
+          <span className="text-ink-muted">第{i + 1}格：</span>
           {panel.dialogue && (
-            <span className="text-indigo-600"> "{panel.dialogue}"</span>
+            <span className="text-ember-dark dark:text-ember-light">
+              {" "}
+              "{panel.dialogue}"
+            </span>
           )}
           {panel.narration && (
-            <span className="text-slate-500"> {panel.narration}</span>
+            <span className="text-ink-muted"> {panel.narration}</span>
           )}
         </div>
       ))}
@@ -350,7 +359,7 @@ function ScriptDisplay({
 
 function ItemMetadata({ item }: { item: Doc<"mangaItems"> }) {
   return (
-    <div className="flex items-center gap-3 text-sm text-slate-400">
+    <div className="flex items-center gap-3 text-sm text-ink-muted">
       <span>风格: {item.style}</span>
       <span>{new Date(item._creationTime).toLocaleString("zh-CN")}</span>
       {item.userPrompt && <span>提示: {item.userPrompt}</span>}

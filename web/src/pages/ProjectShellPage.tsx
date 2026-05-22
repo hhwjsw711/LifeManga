@@ -17,12 +17,12 @@ export function ProjectShellPage({ projectId }: { projectId: Id<"projects"> }) {
 
   if (project === null) {
     return (
-      <div className="max-w-2xl mx-auto p-4">
-        <div className="flex flex-col items-center justify-center h-64 text-slate-400">
+      <div className="max-w-2xl mx-auto p-6">
+        <div className="flex flex-col items-center justify-center h-64 text-ink-muted">
           <p className="text-lg mb-2">工程不存在</p>
           <button
             onClick={() => navigate({ page: "projects" })}
-            className="text-sm text-indigo-500 hover:text-indigo-600"
+            className="text-sm text-ember hover:text-ember-dark"
           >
             返回工程列表
           </button>
@@ -32,34 +32,34 @@ export function ProjectShellPage({ projectId }: { projectId: Id<"projects"> }) {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
+    <div className="max-w-2xl mx-auto p-6">
       <div className="flex items-center gap-3 mb-4">
         <button
           onClick={() => navigate({ page: "projects" })}
-          className="text-slate-400 hover:text-slate-600"
+          className="text-ink-muted hover:text-ink dark:hover:text-cream-light transition-colors"
         >
           ← 返回
         </button>
         <h1 className="text-xl font-bold">{project.name}</h1>
       </div>
 
-      <div className="flex mb-4 bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
+      <div className="flex mb-4 bg-cream-medium dark:bg-ink-medium rounded-pill p-1">
         <button
           onClick={() => setTab("create")}
-          className={`flex-1 py-2 text-sm rounded-md transition-colors ${
+          className={`flex-1 py-2 text-sm rounded-pill transition-all ${
             tab === "create"
-              ? "bg-white dark:bg-slate-700 shadow-sm font-medium"
-              : "text-slate-500"
+              ? "bg-cream-light dark:bg-ink-light shadow-sm font-medium text-ink dark:text-cream-light"
+              : "text-ink-muted"
           }`}
         >
           创作
         </button>
         <button
           onClick={() => setTab("history")}
-          className={`flex-1 py-2 text-sm rounded-md transition-colors ${
+          className={`flex-1 py-2 text-sm rounded-pill transition-all ${
             tab === "history"
-              ? "bg-white dark:bg-slate-700 shadow-sm font-medium"
-              : "text-slate-500"
+              ? "bg-cream-light dark:bg-ink-light shadow-sm font-medium text-ink dark:text-cream-light"
+              : "text-ink-muted"
           }`}
         >
           历史

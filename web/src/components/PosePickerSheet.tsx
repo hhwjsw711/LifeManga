@@ -4,6 +4,7 @@ import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 import { CHARACTER_ART_STYLES, POSE_GROUPS } from "../lib/constants";
 import { ArtStylePicker } from "./ArtStylePicker";
+import { Button } from "./Button";
 
 interface Props {
   characterId: Id<"characters">;
@@ -79,28 +80,26 @@ export function PosePickerSheet({
   };
 
   return (
-    <div className="mt-4 p-3 bg-slate-50 dark:bg-slate-900 rounded-lg">
+    <div className="mt-4 p-4 bg-cream-medium dark:bg-ink/50 rounded-card">
       <h3 className="font-medium text-sm mb-2">选择姿势</h3>
       {errorMessage && (
-        <div className="mb-3 p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-          <p className="text-xs text-red-600 dark:text-red-400">
-            {errorMessage}
-          </p>
+        <div className="mb-3 p-3 bg-error/8 dark:bg-error/20 border border-error/30 dark:border-error/50 rounded-card">
+          <p className="text-xs text-error">{errorMessage}</p>
         </div>
       )}
       {POSE_GROUPS.map((group) => (
         <div key={group.label} className="mb-3">
-          <p className="text-xs text-slate-400 mb-1">{group.label}</p>
+          <p className="text-xs text-ink-muted mb-1">{group.label}</p>
           <div className="flex gap-1 flex-wrap">
             {group.poses.map((pose) => (
               <button
                 key={pose}
                 type="button"
                 onClick={() => togglePose(pose)}
-                className={`px-2 py-1 rounded text-xs border transition-colors ${
+                className={`px-2 py-1 rounded-thumb text-xs border-2 transition-colors ${
                   selectedPoses.includes(pose)
-                    ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30"
-                    : "border-slate-200 dark:border-slate-700"
+                    ? "border-ember bg-ember/8 dark:bg-ember/20"
+                    : "border-cream-dark dark:border-ink-light"
                 }`}
               >
                 {pose}
@@ -120,10 +119,10 @@ export function PosePickerSheet({
         <button
           type="button"
           onClick={() => setIsColor(false)}
-          className={`flex-1 py-1.5 rounded-lg border-2 text-xs transition-colors ${
+          className={`flex-1 py-1.5 rounded-card border-2 text-xs transition-colors ${
             !isColor
-              ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30 font-medium"
-              : "border-slate-200 dark:border-slate-700"
+              ? "border-ember bg-ember/8 dark:bg-ember/20 font-medium"
+              : "border-cream-dark dark:border-ink-light"
           }`}
         >
           ⬛ 黑白
@@ -131,10 +130,10 @@ export function PosePickerSheet({
         <button
           type="button"
           onClick={() => setIsColor(true)}
-          className={`flex-1 py-1.5 rounded-lg border-2 text-xs transition-colors ${
+          className={`flex-1 py-1.5 rounded-card border-2 text-xs transition-colors ${
             isColor
-              ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30 font-medium"
-              : "border-slate-200 dark:border-slate-700"
+              ? "border-ember bg-ember/8 dark:bg-ember/20 font-medium"
+              : "border-cream-dark dark:border-ink-light"
           }`}
         >
           🌈 彩色
@@ -142,19 +141,18 @@ export function PosePickerSheet({
       </div>
 
       <div className="flex gap-2 mt-3">
-        <button
+        <Button
+          variant="primary"
+          size="sm"
           onClick={() => void handleGenerate()}
           disabled={isGenerating || selectedPoses.length === 0}
-          className="px-4 py-2 bg-indigo-500 text-white rounded-lg text-sm disabled:opacity-50 hover:bg-indigo-600 transition-colors"
+          loading={isGenerating}
         >
           {isGenerating ? "生成中..." : `生成 ${selectedPoses.length} 个姿势`}
-        </button>
-        <button
-          onClick={onClose}
-          className="px-4 py-2 text-slate-500 text-sm hover:text-slate-600 transition-colors"
-        >
+        </Button>
+        <Button variant="ghost" size="sm" onClick={onClose}>
           取消
-        </button>
+        </Button>
       </div>
     </div>
   );

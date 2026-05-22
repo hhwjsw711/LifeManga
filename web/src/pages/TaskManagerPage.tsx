@@ -3,6 +3,7 @@ import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Doc, Id } from "../../convex/_generated/dataModel";
 import { LoadingSpinner } from "../components/LoadingSpinner";
+import { Button } from "../components/Button";
 
 const JOB_KIND_LABELS = {
   simpleImage: "简单生成",
@@ -19,10 +20,10 @@ const PHASE_ICONS = {
 } as const;
 
 const PHASE_COLORS = {
-  running: "text-indigo-500",
-  done: "text-green-500",
-  failed: "text-red-500",
-  timeoutUnknown: "text-amber-500",
+  running: "text-ember",
+  done: "text-success",
+  failed: "text-error",
+  timeoutUnknown: "text-warning",
 } as const;
 
 export function TaskManagerPage() {
@@ -63,7 +64,7 @@ export function TaskManagerPage() {
   const others = jobs.filter((j) => j.phase !== "running");
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
+    <div className="max-w-2xl mx-auto p-6">
       <PageHeader
         hasFinishedJobs={others.length > 0}
         onClearFinished={() => void clearFinished()}
@@ -109,7 +110,7 @@ function PageHeader({
       {hasFinishedJobs && (
         <button
           onClick={onClearFinished}
-          className="px-4 py-2 text-sm text-slate-500 hover:text-red-500 transition-colors"
+          className="text-sm text-ink-muted hover:text-error transition-colors"
         >
           清除已完成
         </button>
@@ -120,7 +121,7 @@ function PageHeader({
 
 function EmptyState() {
   return (
-    <div className="flex flex-col items-center justify-center h-32 text-slate-400">
+    <div className="flex flex-col items-center justify-center h-32 text-ink-muted">
       <p className="text-sm">暂无任务</p>
     </div>
   );
@@ -143,8 +144,8 @@ function JobSection({
 }) {
   return (
     <div className="mb-4">
-      <h3 className="text-sm font-medium text-slate-500 mb-2">{title}</h3>
-      <div className="flex flex-col gap-2">
+      <h3 className="text-sm font-medium text-ink-muted mb-2">{title}</h3>
+      <div className="flex flex-col gap-3">
         {jobs.map((job) => (
           <JobCard
             key={job._id}
@@ -187,7 +188,7 @@ function JobCard({
   const hasLogs = job.logs && job.logs.length > 0;
 
   return (
-    <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+    <div className="p-4 bg-cream-light dark:bg-ink-medium rounded-card border-2 border-cream-dark dark:border-ink-light">
       <JobHeader job={job} />
       <JobMessage job={job} />
       <JobProgress job={job} />
@@ -225,7 +226,7 @@ function JobHeader({ job }: { job: Doc<"jobs"> }) {
             {JOB_KIND_LABELS[job.kind] ?? job.kind}
           </p>
           {job.subtitle && (
-            <p className="text-xs text-slate-400 truncate">{job.subtitle}</p>
+            <p className="text-xs text-ink-muted truncate">{job.subtitle}</p>
           )}
         </div>
       </div>
@@ -236,9 +237,9 @@ function JobHeader({ job }: { job: Doc<"jobs"> }) {
 function JobMessage({ job }: { job: Doc<"jobs"> }) {
   return (
     <div className="mt-1">
-      <p className="text-xs text-slate-400">{job.stageMessage}</p>
+      <p className="text-xs text-ink-muted">{job.stageMessage}</p>
       {job.errorMessage && (
-        <p className="text-xs text-red-500 mt-1">{job.errorMessage}</p>
+        <p className="text-xs text-error mt-1">{job.errorMessage}</p>
       )}
     </div>
   );
@@ -247,8 +248,8 @@ function JobMessage({ job }: { job: Doc<"jobs"> }) {
 function JobProgress({ job }: { job: Doc<"jobs"> }) {
   if (job.phase !== "running") return null;
   return (
-    <div className="mt-1 h-1 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-      <div className="h-full bg-indigo-500 rounded-full animate-pulse w-2/3" />
+    <div className="mt-1 h-1 bg-cream-dark dark:bg-ink-light rounded-full overflow-hidden">
+      <div className="h-full bg-ember rounded-full animate-pulse w-2/3" />
     </div>
   );
 }
@@ -256,7 +257,7 @@ function JobProgress({ job }: { job: Doc<"jobs"> }) {
 function JobRetryCount({ job }: { job: Doc<"jobs"> }) {
   if (!job.manualRetryCount || job.manualRetryCount === 0) return null;
   return (
-    <p className="text-[10px] text-slate-400 mt-1">
+    <p className="text-[10px] text-ink-muted mt-1">
       已重试 {job.manualRetryCount} 次
     </p>
   );
@@ -266,7 +267,7 @@ function JobLogs({ job, showLogs }: { job: Doc<"jobs">; showLogs: boolean }) {
   if (!showLogs || !job.logs || job.logs.length === 0) return null;
 
   return (
-    <div className="mt-3 p-2 bg-slate-50 dark:bg-slate-900 rounded-lg max-h-48 overflow-y-auto">
+    <div className="mt-3 p-3 bg-cream-medium dark:bg-ink rounded-card max-h-48 overflow-y-auto">
       {job.logs.map((log, i) => (
         <LogEntry key={i} log={log} />
       ))}
@@ -289,20 +290,20 @@ function LogEntry({
           : "ℹ";
   const levelColor =
     log.level === "error"
-      ? "text-red-500"
+      ? "text-error"
       : log.level === "success"
-        ? "text-green-500"
+        ? "text-success"
         : log.level === "warning"
-          ? "text-amber-500"
-          : "text-slate-500";
+          ? "text-warning"
+          : "text-ink-muted";
 
   return (
     <div className="flex gap-2 text-xs py-0.5">
-      <span className="text-slate-400 shrink-0">
+      <span className="text-ink-muted shrink-0">
         {new Date(log.timestamp).toLocaleTimeString("zh-CN")}
       </span>
       <span className={`shrink-0 ${levelColor}`}>{levelIcon}</span>
-      <span className="text-slate-600 dark:text-slate-300 break-all">
+      <span className="text-ink-light dark:text-cream-light break-all">
         {log.message}
       </span>
     </div>
@@ -335,28 +336,30 @@ function JobActions({
       {hasLogs && (
         <button
           onClick={onToggleLogs}
-          className={`px-2 py-1 text-xs rounded border transition-colors ${
+          className={`px-3 py-1 text-xs rounded-pill border-2 transition-colors ${
             showLogs
-              ? "bg-indigo-50 dark:bg-indigo-900/30 border-indigo-200 dark:border-indigo-800 text-indigo-600"
-              : "text-slate-400 border-slate-200 dark:border-slate-700 hover:text-slate-600"
+              ? "bg-ember/8 dark:bg-ember/20 border-ember/30 text-ember-dark dark:text-ember-light"
+              : "text-ink-muted border-cream-dark dark:border-ink-light hover:text-ink"
           }`}
         >
           日志
         </button>
       )}
       {canRetry && onRetry && (
-        <button
+        <Button
+          variant="secondary"
+          size="sm"
           onClick={onRetry}
           disabled={isRetrying}
-          className="px-2 py-1 text-xs text-amber-600 border border-amber-200 dark:border-amber-800 rounded hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="!text-warning !border-warning/30 dark:!border-warning/30 hover:!bg-warning/10"
         >
           {isRetrying ? "重试中..." : "重试"}
-        </button>
+        </Button>
       )}
       {onCancel && job.phase === "running" && (
         <button
           onClick={onCancel}
-          className="px-2 py-1 text-xs text-red-500 border border-red-200 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+          className="px-3 py-1 text-xs text-error border-2 border-error/30 rounded-pill hover:bg-error/10 transition-colors"
         >
           取消
         </button>
@@ -364,7 +367,7 @@ function JobActions({
       {onDelete && (
         <button
           onClick={onDelete}
-          className="px-2 py-1 text-xs text-slate-400 hover:text-red-500 transition-colors"
+          className="px-3 py-1 text-xs text-ink-muted hover:text-error transition-colors"
         >
           删除
         </button>
@@ -375,7 +378,7 @@ function JobActions({
 
 function JobTimestamp({ job }: { job: Doc<"jobs"> }) {
   return (
-    <p className="text-[10px] text-slate-400 mt-1">
+    <p className="text-[10px] text-ink-muted mt-1">
       {new Date(job._creationTime).toLocaleString("zh-CN")}
     </p>
   );

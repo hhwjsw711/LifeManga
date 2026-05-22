@@ -6,13 +6,13 @@ export function ErrorBanner({
   onDismiss?: () => void;
 }) {
   return (
-    <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-start gap-2">
-      <p className="text-sm text-red-600 dark:text-red-400 flex-1">{message}</p>
+    <div className="p-3 bg-error/8 dark:bg-error/20 border border-error/30 dark:border-error/50 rounded-card flex items-start gap-2">
+      <p className="text-sm text-error flex-1">{message}</p>
       {onDismiss && (
         <button
           type="button"
           onClick={onDismiss}
-          className="text-red-400 hover:text-red-600 text-sm shrink-0"
+          className="text-error/60 hover:text-error text-sm shrink-0"
           aria-label="关闭"
         >
           ✕
